@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 57c5c53bc7b2a914d98756a19b3c48b0
+timeCreated: 1485291293
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - pendelum: {fileID: 1000013386016082, guid: 23b4778e9dc9b7a448359f990656ca10, type: 2}
+  - SpawnPoint: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
