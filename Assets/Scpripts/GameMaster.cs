@@ -119,10 +119,6 @@ public class GameMaster : MonoBehaviour {
             {
                 ListOfBestPendelums[i].GetComponent<Pendelum>().Deactivate();
             }
-            
-            
-            //NewGeneration();
-            //If simulation has runned for long enough, stop it
         }
     }
 
@@ -243,7 +239,7 @@ public class GameMaster : MonoBehaviour {
             print(BestPendelums[i].Fitness);
         }
 
-        print(BestPendelums.Count);
+        //print(BestPendelums.Count);
 
 
             float offset = 0.3f;
@@ -336,8 +332,6 @@ public class GameMaster : MonoBehaviour {
         return MixedDNA; //Change to MixedDNA once impelemted
     }
 
-
-
     //changes the state of the simulation from running to stopped. Controlled by the start simulation button
     public void StartSimulation()
     {
@@ -418,4 +412,8 @@ public class GameMaster : MonoBehaviour {
         //print(MatingRate);
     }
 
+    public void ResetBestValue()
+    {
+        BestPendelumFitness = 0f;
+    }
 }

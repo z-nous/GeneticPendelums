@@ -68,7 +68,7 @@ public class Pendelum : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (activated == true)
+        if (activated == true && Fallen == false)
         {
             if (IsDNASet == true)
             {
@@ -137,11 +137,16 @@ public class Pendelum : MonoBehaviour
         {
             float lowersticangle = LoweStick.transform.eulerAngles.x;
             float upperstickangle = UpperStick.transform.eulerAngles.x;
-            if (lowersticangle < 180 && upperstickangle < 180 && Fallen == false)
+            if (lowersticangle < 180 && Fallen == false)
             {
                 Fitness = Fitness + Time.deltaTime;
             }
-            else Fallen = true;
+            else
+            {
+                LoweStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
+                //UpperStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
+                Fallen = true;
+            }
         }
         else//Fitness for single pendelum
         {
@@ -150,7 +155,11 @@ public class Pendelum : MonoBehaviour
             {
                 Fitness = Fitness + Time.deltaTime;
             }
-            else Fallen = true;
+            else
+            {
+                LoweStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
+                Fallen = true;
+            }
 
 
         }
