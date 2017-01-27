@@ -15,6 +15,7 @@ public class Pendelum : MonoBehaviour
     public GameObject UpperGoal;
     public GameObject LowerGoal;
     public bool IsDNASet = false;
+    public bool IsSingle = false; //puts the code into a single pendelum mode.
 
     private float[] DNA;
     private int j = 0;
@@ -107,11 +108,24 @@ public class Pendelum : MonoBehaviour
 
     void CalculateFitness()
     {
-        float UpperDistance = 0f;
-        float LowerDistance = 0f;
-        UpperDistance = Vector3.Distance(UpperStick.transform.position, UpperGoal.transform.position) * Time.deltaTime * 10;
-        LowerDistance = Vector3.Distance(LoweStick.transform.position, LowerGoal.transform.position) * Time.deltaTime * 10;
-        Fitness = Fitness - UpperDistance - LowerDistance;
+        if (IsSingle == false)
+        {
+            float UpperDistance = 0f;
+            float LowerDistance = 0f;
+            float lowersticangle = LoweStick.transform.eulerAngles.x;
+            UpperDistance = Vector3.Distance(UpperStick.transform.position, UpperGoal.transform.position) * Time.deltaTime * 10;
+            LowerDistance = Vector3.Distance(LoweStick.transform.position, LowerGoal.transform.position) * Time.deltaTime * 10;
+            if (lowersticangle > 180) LowerDistance = LowerDistance * 5f; //punsih if the stick is fallen
+            Fitness = Fitness - UpperDistance - LowerDistance;
+        }
+        else
+        {
+            float LowerDistance = 0f;
+            float lowersticangle = LoweStick.transform.eulerAngles.x;
+            LowerDistance = Vector3.Distance(LoweStick.transform.position, LowerGoal.transform.position) * Time.deltaTime * 10;
+            if (lowersticangle > 180) LowerDistance = LowerDistance * 5f; //punsih if the stick is fallen
+            Fitness = Fitness - LowerDistance;
+        }
     }
 
     void RandomizeDNA()

@@ -26,7 +26,7 @@ public class BestPendelumDNA
 
 public class GameMaster : MonoBehaviour {
 
-    public int PendelumAmount; //How many pendelums to instantiate per generation
+    //public int PendelumAmount; //How many pendelums to instantiate per generation
     public GameObject pendelum; //pendelum gameobject to be instantiated
     public GameObject SpawnPoint; //spawn point for pendelums
     public GameObject BestSpawnpoint; //Spawn point for the best pendelums
@@ -41,6 +41,10 @@ public class GameMaster : MonoBehaviour {
     public Text Info; //GUI text of the current best pendelums fitness and number of generations
     public Text StartSimulationText; //button text for starting simulation
     public Text TimeScaleText; // button text for timescale button
+    public Text Mutationtext;
+    public Slider MutationSlider;
+    public Slider MatingrateSlider;
+    public Text MatingText;
 
     public float MinMaxMovementForce = 5f; //Max force applied to the pendelums
     
@@ -51,12 +55,14 @@ public class GameMaster : MonoBehaviour {
     private bool RunNextGeneration = false; //if true, run next generation of pendelums
     private int AccelerateTime; //used for time flow control
     private float AvarageFitness = 0f;
+    private bool UseParents = true; //does mating happen, or is the change done via mutation.
+    private int MatingRate = 100;
    
 	// Use this for initialization
 	void Start () {
         
         AliverTimer = 0f; //Reset the time
-        AccelerateTime = 1; //set timemultiplier to 1
+        AccelerateTime = 2; //set timemultiplier to 1
 
         //Initialize all the lists
         ListOfPendelums = new List<GameObject>();
@@ -126,6 +132,25 @@ public class GameMaster : MonoBehaviour {
         }
     }
 
+    public void SetFucking()
+    {
+        UseParents = !UseParents;
+    }
+
+    public void SetMutationPercent()
+    {
+        Mutationthreshold = (int) MutationSlider.value;
+        Mutationtext.text = "Mutation Percent: " + Mutationthreshold;
+
+    }
+
+    public void SetMatingRate()
+    {
+        MatingRate = (int)MatingrateSlider.value;
+        MatingText.text = "Cutoff % for mating: " + MatingRate;
+        //print(MatingRate);
+    }
+
 	// Update is called once per frame
 	void Update () {
 
@@ -184,25 +209,31 @@ public class GameMaster : MonoBehaviour {
         MixedDNA = new float[DNA1.Length];
 
         //MIXING THE DNA
+
         int Cut;
         Cut = Random.Range(0, DNA1.Length);
         //print(Cut);
 
         for (int i = 0; i < DNA1.Length; i++)
         {
-            if (i < Cut)
-            {
-                MixedDNA[i] = DNA1[i];
+            if(UseParents == true) {
+                 
+                if (i < Cut)
+                {
+                    MixedDNA[i] = DNA1[i];
+                }
+                else
+                {
+                    MixedDNA[i] = DNA2[i];
+                }
             }
             else
             {
-                MixedDNA[i] = DNA2[i];
+                MixedDNA[i] = DNA1[i];
             }
-            if (Random.Range(0, 100) > Mutationthreshold) MixedDNA[i] = Random.Range(-MinMaxMovementForce, MinMaxMovementForce);
 
-            
+            if (Random.Range(0, 100) < Mutationthreshold) MixedDNA[i] = Random.Range(-MinMaxMovementForce, MinMaxMovementForce);    
         }
-
         return MixedDNA; //Change to MixedDNA once impelemted
     }
 
@@ -217,6 +248,10 @@ public class GameMaster : MonoBehaviour {
             //Shut down all the pendelums.
             for (int i = 0; i < NumberOfPendelums; i++){
                ListOfPendelums[i].GetComponent<Pendelum>().Deactivate();
+            }
+            for (int i = 0; i < ListOfBestPendelums.Count; i++)
+            {
+                ListOfBestPendelums[i].GetComponent<Pendelum>().Deactivate();
             }
             
             
@@ -255,9 +290,9 @@ public class GameMaster : MonoBehaviour {
 
         //Create a mating pool for the pendelums
 
-        for (int i = 0; i < NumberOfPendelums/2; i++)
+        for (int i = 0; i < MatingRate; i++)
         {
-            for (int j = 0; j < NumberOfPendelums/2 - i; j++)
+            for (int j = 0; j < MatingRate - i; j++)
             {
                 MatingPool.Add(ListOfPendelums[i]);
             }
@@ -312,6 +347,7 @@ public class GameMaster : MonoBehaviour {
                 BestPendelums.RemoveAt(i);
             }
         }
+        
         
 
         //print(BestPendelums.Count);
