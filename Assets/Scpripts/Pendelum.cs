@@ -9,7 +9,7 @@ public class Pendelum : MonoBehaviour
     public int MovementArea = 5;
     public float ForceApplyInterval = 0.2f;
     public float MinMaxMovementForce = 5f;
-    public float Fitness = 1000f;
+    public float Fitness = 0f;
     public GameObject UpperStick;
     public GameObject LoweStick;
     public GameObject UpperGoal;
@@ -20,6 +20,7 @@ public class Pendelum : MonoBehaviour
     private float[] DNA;
     private int j = 0;
     private bool activated = true;
+    private bool Fallen = false;
 
     public float GetFitness()
     {
@@ -108,7 +109,10 @@ public class Pendelum : MonoBehaviour
 
     void CalculateFitness()
     {
-        if (IsSingle == false)
+
+        //#############################Fitness based on distance from goal
+        /*
+        if (IsSingle == false)//fitness for double pendelum
         {
             float UpperDistance = 0f;
             float LowerDistance = 0f;
@@ -118,13 +122,37 @@ public class Pendelum : MonoBehaviour
             if (lowersticangle > 180) LowerDistance = LowerDistance * 5f; //punsih if the stick is fallen
             Fitness = Fitness - UpperDistance - LowerDistance;
         }
-        else
+        else//Fitness for single pendelum
         {
             float LowerDistance = 0f;
             float lowersticangle = LoweStick.transform.eulerAngles.x;
             LowerDistance = Vector3.Distance(LoweStick.transform.position, LowerGoal.transform.position) * Time.deltaTime * 10;
             if (lowersticangle > 180) LowerDistance = LowerDistance * 5f; //punsih if the stick is fallen
             Fitness = Fitness - LowerDistance;
+        }
+        */
+
+        //#############################Fitness based on time standing up
+        if (IsSingle == false)//fitness for double pendelum
+        {
+            float lowersticangle = LoweStick.transform.eulerAngles.x;
+            float upperstickangle = UpperStick.transform.eulerAngles.x;
+            if (lowersticangle < 180 && upperstickangle < 180 && Fallen == false)
+            {
+                Fitness = Fitness + Time.deltaTime;
+            }
+            else Fallen = true;
+        }
+        else//Fitness for single pendelum
+        {
+            float lowersticangle = LoweStick.transform.eulerAngles.x;
+            if (lowersticangle < 180 && Fallen == false)
+            {
+                Fitness = Fitness + Time.deltaTime;
+            }
+            else Fallen = true;
+
+
         }
     }
 

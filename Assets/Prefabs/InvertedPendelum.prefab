@@ -483,7 +483,7 @@ MonoBehaviour:
   MovementArea: 5
   ForceApplyInterval: 0.2
   MinMaxMovementForce: 5
-  Fitness: 1000
+  Fitness: 0
   UpperStick: {fileID: 1000013692932264}
   LoweStick: {fileID: 1000013692932264}
   UpperGoal: {fileID: 1000013378933930}
