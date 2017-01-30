@@ -143,7 +143,7 @@ public class Pendelum : MonoBehaviour
             }
             else
             {
-                LoweStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
+                //LoweStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
                 //UpperStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
                 Fallen = true;
             }
@@ -157,8 +157,9 @@ public class Pendelum : MonoBehaviour
             }
             else
             {
-                LoweStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
+                //LoweStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
                 Fallen = true;
+                //print(Fitness);
             }
 
 

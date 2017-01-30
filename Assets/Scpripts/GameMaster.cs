@@ -49,6 +49,9 @@ public class GameMaster : MonoBehaviour {
     public Slider MatingrateSlider;
     public Text MatingText;
     public Dropdown Pendelumtype;
+    public Text MutationPossibilityText;
+    public Slider MutationPossibilitySlider;
+    public int MutationPossibility = 10;
 
     public float MinMaxMovementForce = 5f; //Max force applied to the pendelums
     
@@ -63,6 +66,7 @@ public class GameMaster : MonoBehaviour {
     private int MatingRate = 100;
     private GameObject pendelum; //Pendelum type to be instantiated
     private float BestPendelumFitness = 0f; //the best fitness of any pendelem
+    
    
 	// Use this for initialization
 	void Start () {
@@ -307,6 +311,7 @@ public class GameMaster : MonoBehaviour {
         int Cut;
         Cut = Random.Range(0, DNA1.Length);
         //print(Cut);
+        int RandMutation = Random.Range(0, 100);
 
         for (int i = 0; i < DNA1.Length; i++)
         {
@@ -326,8 +331,9 @@ public class GameMaster : MonoBehaviour {
             {
                 MixedDNA[i] = DNA1[i];
             }
-
-            if (Random.Range(0, 100) < Mutationthreshold) MixedDNA[i] = Random.Range(-MinMaxMovementForce, MinMaxMovementForce);
+            if (MutationPossibility > RandMutation) { 
+                if (Random.Range(0, 100) < Mutationthreshold) MixedDNA[i] = Random.Range(-MinMaxMovementForce, MinMaxMovementForce);
+            }
         }
         return MixedDNA; //Change to MixedDNA once impelemted
     }
@@ -402,6 +408,13 @@ public class GameMaster : MonoBehaviour {
     {
         Mutationthreshold = (int)MutationSlider.value;
         Mutationtext.text = "Mutation Percent: " + Mutationthreshold;
+
+    }
+
+    public void SetMutationPossibility()
+    {
+        MutationPossibility = (int)MutationPossibilitySlider.value;
+        MutationPossibilityText.text = "Possibility for mutation: " + MutationPossibility + "%";
 
     }
 
