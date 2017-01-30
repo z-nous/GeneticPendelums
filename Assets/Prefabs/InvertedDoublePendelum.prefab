@@ -607,6 +607,10 @@ MonoBehaviour:
   LowerGoal: {fileID: 1000010406508622}
   IsDNASet: 0
   IsSingle: 0
+  DNA: []
+  j: 0
+  activated: 1
+  Fallen: 0
 --- !u!114 &114000010890491072
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -615,7 +619,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000012924241636}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb4ce427acef5ae45bc560f26f20c524, type: 3}
+  m_Script: {fileID: 11500000, guid: 64935a4e37a4d27498c1dbb2f43efd68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 54000010428413050}

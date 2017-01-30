@@ -136,11 +136,13 @@ public class GameMaster : MonoBehaviour {
         SortPendelumsbyfitness();
         AddTheBestToBestList();
         CalculateAvarageFitness();
-        UpdateInformationToGUI();
-        
+
         //Update Best Fitness value
         if (ListOfPendelums[0].GetComponent<Pendelum>().Fitness > BestPendelumFitness) BestPendelumFitness = ListOfPendelums[0].GetComponent<Pendelum>().Fitness;
 
+        UpdateInformationToGUI();
+        
+ 
         
         //Create a mating pool for the pendelums
 
@@ -428,5 +430,6 @@ public class GameMaster : MonoBehaviour {
     public void ResetBestValue()
     {
         BestPendelumFitness = 0f;
+
     }
 }
