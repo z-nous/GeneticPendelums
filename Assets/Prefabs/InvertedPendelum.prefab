@@ -22,7 +22,6 @@ GameObject:
   - 33: {fileID: 33000012109485664}
   - 135: {fileID: 135000012295805052}
   - 23: {fileID: 23000012754638080}
-  - 114: {fileID: 114000012529444784}
   - 54: {fileID: 54000013186053850}
   m_Layer: 0
   m_Name: Sphere
@@ -490,33 +489,6 @@ MonoBehaviour:
   LowerGoal: {fileID: 1000012981484382}
   IsDNASet: 0
   IsSingle: 1
---- !u!114 &114000012529444784
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000011612604072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb4ce427acef5ae45bc560f26f20c524, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 54000013186053850}
-  DNALength: 1000
-  MovementArea: 5
-  ForceApplyInterval: 0.2
-  MinMaxMovementForce: 50
-  Fitness: 1000
-  UpperStick: {fileID: 0}
-  LoweStick: {fileID: 1000013692932264}
-  UpperGoal: {fileID: 1000013378933930}
-  LowerGoal: {fileID: 1000012981484382}
-  IsDNASet: 0
-  IsSingle: 0
-  DNA: []
-  j: 0
-  activated: 1
-  Fallen: 0
 --- !u!135 &135000012295805052
 SphereCollider:
   m_ObjectHideFlags: 1

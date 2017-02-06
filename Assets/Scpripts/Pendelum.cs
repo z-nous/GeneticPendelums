@@ -7,7 +7,7 @@ public class Pendelum : MonoBehaviour
     public Rigidbody rb;
     public int DNALength = 10;
     public int MovementArea = 5;
-    public float ForceApplyInterval = 0.2f;
+    //public float ForceApplyInterval = 0.2f;
     public float MinMaxMovementForce = 5f;
     public float Fitness = 0f;
     public GameObject UpperStick;
@@ -21,6 +21,8 @@ public class Pendelum : MonoBehaviour
     private int j = 0;
     private bool activated = true;
     private bool Fallen = false;
+    private bool UsingNeuralNetwork = true;
+    private NeuronalNetwork Controller;
 
     public float GetFitness()
     {
@@ -39,13 +41,7 @@ public class Pendelum : MonoBehaviour
         //LowerGoal.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
     }
 
-    public void ReRun()
-    {
-        //Move to starting location
-        //reset j to 0
-        //set active
-    }
-    
+
 
     public void SetDNA(float[] DNAtoInject)
     {
@@ -56,34 +52,69 @@ public class Pendelum : MonoBehaviour
         }
         IsDNASet = true;
         DNALength = DNAtoInject.Length;
+        UsingNeuralNetwork = false;
     }
+
+    public NeuronalNetwork GetNeuralNetwork()
+    {
+        return Controller;
+    }
+
+    public void SetNeuralNetwork(NeuronalNetwork network)
+    {
+        Controller = new NeuronalNetwork(network);
+        UsingNeuralNetwork = true;
+        //Controller.Mutate(-1);
+    }
+    
 
     // Use this for initialization
     void Start()
     {
         //RandomizeDNA();
+        //Controller = new NeuronalNetwork(1, 1, 3, 5);
 
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (activated == true && Fallen == false)
         {
-            if (IsDNASet == true)
+
+            if (UsingNeuralNetwork == false)
             {
-                Transfer(DNA[j]);
-                if (j > DNALength)
+                if (IsDNASet == true)
                 {
-                    print(DNALength);
-                    j = 0;
+                    Transfer(DNA[j]);
+                    if (j > DNA.Length - 1)
+                    {
+                        print(DNALength);
+                        j = 0;
+                    }
+                    j++;
+                    //print(Time.deltaTime);
+                    CalculateFitness();
+                    //print(Fitness);
                 }
-                j++;
-                //print(Time.deltaTime);
-                CalculateFitness();
-                //print(Fitness);
+            }
+            else
+            {
+                UseNeuralNetwork();
             }
         }
+    }
+
+
+    void UseNeuralNetwork()
+    {
+        Controller.SetInput(0, LoweStick.transform.eulerAngles.x); //add lower stick angle to the controller
+        Controller.SetInput(1, rb.velocity.x); //Add velocity of the pendelum root to the controller
+        Controller.SetInput(2, LoweStick.GetComponent<Rigidbody>().angularVelocity.x); //Add lower stick angular velocity to the Controller
+        Controller.Calculate();
+        CalculateFitness();
+        Transfer(Controller.GetOutput(0));
     }
 
     void Transfer(float amount)
@@ -136,7 +167,7 @@ public class Pendelum : MonoBehaviour
         if (IsSingle == false)//fitness for double pendelum
         {
             float lowersticangle = LoweStick.transform.eulerAngles.x;
-            float upperstickangle = UpperStick.transform.eulerAngles.x;
+            //float upperstickangle = UpperStick.transform.eulerAngles.x;
             if (lowersticangle < 180 && Fallen == false)
             {
                 Fitness = Fitness + Time.deltaTime;
@@ -159,6 +190,10 @@ public class Pendelum : MonoBehaviour
             {
                 //LoweStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
                 Fallen = true;
+                GameObject[] Master = GameObject.FindGameObjectsWithTag("GameMaster");
+                Master[0].GetComponent<GameMaster>().MinusNumberOfActivePendelums();
+                LoweStick.GetComponent<Renderer>().material.color = Color.red;
+
                 //print(Fitness);
             }
 
