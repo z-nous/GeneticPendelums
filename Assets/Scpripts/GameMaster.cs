@@ -44,6 +44,7 @@ public class GameMaster : MonoBehaviour {
     public GameObject DoublePendelum; //Prefab for double pendelum
     public GameObject SpawnPoint; //spawn point for pendelums
     public GameObject BestSpawnpoint; //Spawn point for the best pendelums
+    public GameObject AvarageFitnessGraph;
     public int DNALength = 500; //length of the pendelum DNA ... ie number of instructions
     public int NumberOfPendelums = 100; //How many pendelums are instantiated per generation
     public float AliveTime = 5f; //How long to simulate in seconds
@@ -67,6 +68,7 @@ public class GameMaster : MonoBehaviour {
     public Text SimulationLengthText;
     public Slider NumberOfPendelumsSlider;
     public Text NumberofPendelumsSliderText;
+    
 
     public float MinMaxMovementForce = 5f; //Max force applied to the pendelums
 
@@ -77,7 +79,7 @@ public class GameMaster : MonoBehaviour {
 
 
     private float AliverTimer; // used to measure simulation time
-    private bool IsSimulationRunning = true; //True if simulation is running.
+    private bool IsSimulationRunning = false; //True if simulation is running.
     private int generation = 1; //generation count
     private bool RunNextGeneration = false; //if true, run next generation of pendelums
     private int AccelerateTime; //used for time flow control
@@ -88,6 +90,8 @@ public class GameMaster : MonoBehaviour {
     private float BestPendelumFitness = 0f; //the best fitness of any pendelem
     private bool IsPendelumsCreated = false;
     private int NumberOfPendelumsActive;
+    private List<float> AvarageFitnessValues;
+    
 
 
     // Use this for initialization
@@ -104,7 +108,9 @@ public class GameMaster : MonoBehaviour {
         ListOfBestPendelums = new List<GameObject>();
         ListOfNeuralNetworks = new List<NeuralnetList>();
         NeuralMatingPool = new List<NeuralnetList>();
+        AvarageFitnessValues = new List<float>();
         //instantiate the first generation of pendelums
+
     }
 
     // Update is called once per frame
@@ -162,10 +168,11 @@ public class GameMaster : MonoBehaviour {
             AvarageFitness += ListOfNeuralNetworks[i].Fitness;
         }
         AvarageFitness = AvarageFitness / ListOfNeuralNetworks.Count;
-
+        AvarageFitnessValues.Add(AvarageFitness);
+        
         //Update information on screen
         Info.text = "Best this generation:\n" + ListOfNeuralNetworks[0].Fitness + "\nThis generation avarage:\n" + AvarageFitness + "\nBest ever:\n" + BestPendelumFitness + "\nGeneration: " + generation;
-
+        AvarageFitnessGraph.GetComponent<Graph>().AddValue(AvarageFitness, ListOfNeuralNetworks[0].Fitness, ListOfNeuralNetworks[ListOfNeuralNetworks.Count - 1].Fitness);
         generation++;
         //Mutate the Controllers
 
@@ -207,6 +214,7 @@ public class GameMaster : MonoBehaviour {
             ListOfPendelums[i].GetComponent<Pendelum>().SetNeuralNetwork(NeuralMatingPool[Random.Range(0, NeuralMatingPool.Count)].Controller); //Add random controller from mating pool
         }
         NeuralMatingPool.Clear(); //Kill the last generation of pendelums
+        ListOfNeuralNetworks.Clear(); //Clear the old list of networks
 
         IsSimulationRunning = true;
 
@@ -587,6 +595,9 @@ public class GameMaster : MonoBehaviour {
                 ListOfPendelums[i].gameObject.GetComponent<Pendelum>().SetNeuralNetwork(new NeuronalNetwork(3,1,5,10,10));
             }
         }
+        AvarageFitnessValues.Clear();
+
+
     }
 
     public void SetNumberOfPendelums()
@@ -600,4 +611,6 @@ public class GameMaster : MonoBehaviour {
         NumberOfPendelumsActive = NumberOfPendelumsActive - 1;
         //print(NumberOfPendelumsActive);
     }
+
+
 }
