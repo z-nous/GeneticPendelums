@@ -209,9 +209,15 @@ public class GameMaster : MonoBehaviour {
         AddPendelums(NumberOfPendelums); //Add new pendelums to the simulation
 
         //Add the networks to the pendelums
+        bool forcetoggle = true;
+        float Startingforce = 1f;
         for (int i = 0; i < NumberOfPendelums; i++)
         {
-            ListOfPendelums[i].GetComponent<Pendelum>().SetNeuralNetwork(NeuralMatingPool[Random.Range(0, NeuralMatingPool.Count)].Controller); //Add random controller from mating pool
+            forcetoggle = !forcetoggle;
+            if (forcetoggle == true) Startingforce = -1f;
+            else Startingforce = 1f;
+            forcetoggle = !forcetoggle;
+            ListOfPendelums[i].GetComponent<Pendelum>().SetNeuralNetwork(NeuralMatingPool[Random.Range(0, NeuralMatingPool.Count)].Controller, Startingforce); //Add random controller from mating pool
         }
         NeuralMatingPool.Clear(); //Kill the last generation of pendelums
         ListOfNeuralNetworks.Clear(); //Clear the old list of networks
@@ -592,11 +598,11 @@ public class GameMaster : MonoBehaviour {
         {
             for (int i = 0; i < NumberOfPendelums; i++)
             {
-                ListOfPendelums[i].gameObject.GetComponent<Pendelum>().SetNeuralNetwork(new NeuronalNetwork(3,1,5,10,10));
+                ListOfPendelums[i].gameObject.GetComponent<Pendelum>().SetNeuralNetwork(new NeuronalNetwork(3,1,5,10,10),0f);
             }
         }
         AvarageFitnessValues.Clear();
-
+        
 
     }
 

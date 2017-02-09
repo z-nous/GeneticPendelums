@@ -60,10 +60,11 @@ public class Pendelum : MonoBehaviour
         return Controller;
     }
 
-    public void SetNeuralNetwork(NeuronalNetwork network)
+    public void SetNeuralNetwork(NeuronalNetwork network,float StartMovement)
     {
         Controller = new NeuronalNetwork(network);
         UsingNeuralNetwork = true;
+        Transfer(StartMovement);
         //Controller.Mutate(-1);
     }
     
@@ -113,8 +114,9 @@ public class Pendelum : MonoBehaviour
         Controller.SetInput(1, rb.velocity.x); //Add velocity of the pendelum root to the controller
         Controller.SetInput(2, LoweStick.GetComponent<Rigidbody>().angularVelocity.x); //Add lower stick angular velocity to the Controller
         Controller.Calculate();
+        Transfer(Controller.GetOutput(0)*5);
         CalculateFitness();
-        Transfer(Controller.GetOutput(0));
+        
     }
 
     void Transfer(float amount)
@@ -167,24 +169,35 @@ public class Pendelum : MonoBehaviour
         if (IsSingle == false)//fitness for double pendelum
         {
             float lowersticangle = LoweStick.transform.eulerAngles.x;
+            float multiplier = 0f;
             //float upperstickangle = UpperStick.transform.eulerAngles.x;
             if (lowersticangle < 180 && Fallen == false)
             {
-                Fitness = Fitness + Time.deltaTime;
+                if (lowersticangle < 90) multiplier = lowersticangle / 100;
+                if (lowersticangle > 90) multiplier = 180 - lowersticangle / 100;
+                if (lowersticangle == 90) multiplier = 1.1f;
+                Fitness = Fitness + Time.deltaTime * multiplier;
             }
             else
             {
                 //LoweStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
                 //UpperStick.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX;
                 Fallen = true;
+                GameObject[] Master = GameObject.FindGameObjectsWithTag("GameMaster");
+                Master[0].GetComponent<GameMaster>().MinusNumberOfActivePendelums();
+                LoweStick.GetComponent<Renderer>().material.color = Color.red;
             }
         }
         else//Fitness for single pendelum
         {
             float lowersticangle = LoweStick.transform.eulerAngles.x;
+            float multiplier = 0f;
             if (lowersticangle < 180 && Fallen == false)
             {
-                Fitness = Fitness + Time.deltaTime;
+                if (lowersticangle < 90) multiplier = lowersticangle/100;
+                if (lowersticangle > 90) multiplier = 180 - lowersticangle/100;
+                if (lowersticangle == 90) multiplier = 1.1f;
+                Fitness = Fitness + Time.deltaTime*multiplier;
             }
             else
             {

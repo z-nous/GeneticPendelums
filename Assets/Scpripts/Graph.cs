@@ -15,6 +15,7 @@ public class Graph : MonoBehaviour {
     private List<float> AvarageValues = new List<float>();
     private List<float> BestValues = new List<float>();
     private List<float> WorstValues = new List<float>();
+    private float BestValue = 0f;
 /*
     public void AddValues(List<float> NewValues)
     {
@@ -27,6 +28,7 @@ public class Graph : MonoBehaviour {
 */
     public void AddValue(float newavaragevalue, float newbestvalue, float newworstvalue)
     {
+        if (newbestvalue > BestValue) BestValue = newbestvalue;
         AvarageValues.Add(newavaragevalue);
         BestValues.Add(newbestvalue);
         WorstValues.Add(newworstvalue);
@@ -48,13 +50,13 @@ public class Graph : MonoBehaviour {
         WorstLine.SetVertexCount(WorstValues.Count);
 
         float spacing = 490f / AvarageValues.Count;
-
+        float Heightmultiplier = 190 / BestValue;  
 
         for(int i = 0; i < AvarageValues.Count; i++)
         {
-            AvarageLine.SetPosition(i, new Vector3(GraphStartPostion.localPosition.x + spacing * i, GraphStartPostion.localPosition.y + AvarageValues[i] * 9.5f, GraphStartPostion.localPosition.z));
-            BestLine.SetPosition(i, new Vector3(GraphStartPostion.localPosition.x + spacing * i, GraphStartPostion.localPosition.y + BestValues[i] * 9.5f, GraphStartPostion.localPosition.z));
-            WorstLine.SetPosition(i, new Vector3(GraphStartPostion.localPosition.x + spacing * i, GraphStartPostion.localPosition.y + WorstValues[i] * 9.5f, GraphStartPostion.localPosition.z));
+            AvarageLine.SetPosition(i, new Vector3(GraphStartPostion.localPosition.x + spacing * i, GraphStartPostion.localPosition.y + AvarageValues[i] * Heightmultiplier, GraphStartPostion.localPosition.z));
+            BestLine.SetPosition(i, new Vector3(GraphStartPostion.localPosition.x + spacing * i, GraphStartPostion.localPosition.y + BestValues[i] * Heightmultiplier, GraphStartPostion.localPosition.z));
+            WorstLine.SetPosition(i, new Vector3(GraphStartPostion.localPosition.x + spacing * i, GraphStartPostion.localPosition.y + WorstValues[i] * Heightmultiplier, GraphStartPostion.localPosition.z));
 
         }
 
