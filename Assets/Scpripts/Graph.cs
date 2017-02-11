@@ -49,7 +49,7 @@ public class Graph : MonoBehaviour {
         BestLine.SetVertexCount(BestValues.Count);
         WorstLine.SetVertexCount(WorstValues.Count);
 
-        float spacing = 490f / AvarageValues.Count;
+        float spacing = 850f / AvarageValues.Count;
         float Heightmultiplier = 190 / BestValue;  
 
         for(int i = 0; i < AvarageValues.Count; i++)

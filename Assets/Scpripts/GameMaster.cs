@@ -61,6 +61,7 @@ public class GameMaster : MonoBehaviour {
     public Slider MatingrateSlider;
     public Text MatingText;
     public Dropdown Pendelumtype;
+    public Dropdown ControllerType;
     public Text MutationPossibilityText;
     public Slider MutationPossibilitySlider;
     public int MutationPossibility = 10;
@@ -565,7 +566,9 @@ public class GameMaster : MonoBehaviour {
 
     public void SetNeuralNetworkUsage()
     {
-        UsingNeuralNetwork = !UsingNeuralNetwork;
+        if (ControllerType.value == 0) UsingNeuralNetwork = true;
+        if (ControllerType.value == 1) UsingNeuralNetwork = false;
+        //UsingNeuralNetwork = !UsingNeuralNetwork;
         print(UsingNeuralNetwork);
     }
 
