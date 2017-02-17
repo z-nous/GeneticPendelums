@@ -116,7 +116,6 @@ public class Pendelum : MonoBehaviour
         Controller.Calculate();
         Transfer(Controller.GetOutput(0)*5);
         CalculateFitness();
-        
     }
 
     void Transfer(float amount)

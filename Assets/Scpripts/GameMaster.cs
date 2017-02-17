@@ -69,7 +69,11 @@ public class GameMaster : MonoBehaviour {
     public Text SimulationLengthText;
     public Slider NumberOfPendelumsSlider;
     public Text NumberofPendelumsSliderText;
-    
+    public Slider NumberOfNewPendelumsSlider;
+    public Text NUmberOfNewPendelumsText;
+    public InputField FirstLayer;
+    public InputField SecondLayer;
+    public InputField ThirdLayer;
 
     public float MinMaxMovementForce = 5f; //Max force applied to the pendelums
 
@@ -92,8 +96,10 @@ public class GameMaster : MonoBehaviour {
     private bool IsPendelumsCreated = false;
     private int NumberOfPendelumsActive;
     private List<float> AvarageFitnessValues;
-    
-
+    private int NumberOfNewPendelums = 0;
+    private int NumberofnueronsFirst = 5;
+    private int NumberofneuronsSecond = 10;
+    private int NumberofneuronsThird = 10;
 
     // Use this for initialization
     void Start () {
@@ -174,7 +180,6 @@ public class GameMaster : MonoBehaviour {
         //Update information on screen
         Info.text = "Best this generation:\n" + ListOfNeuralNetworks[0].Fitness + "\nThis generation avarage:\n" + AvarageFitness + "\nBest ever:\n" + BestPendelumFitness + "\nGeneration: " + generation;
         AvarageFitnessGraph.GetComponent<Graph>().AddValue(AvarageFitness, ListOfNeuralNetworks[0].Fitness, ListOfNeuralNetworks[ListOfNeuralNetworks.Count - 1].Fitness);
-        generation++;
         //Mutate the Controllers
 
 
@@ -210,15 +215,17 @@ public class GameMaster : MonoBehaviour {
         AddPendelums(NumberOfPendelums); //Add new pendelums to the simulation
 
         //Add the networks to the pendelums
-        bool forcetoggle = true;
-        float Startingforce = 1f;
+
         for (int i = 0; i < NumberOfPendelums; i++)
         {
-            forcetoggle = !forcetoggle;
-            if (forcetoggle == true) Startingforce = -1f;
-            else Startingforce = 1f;
-            forcetoggle = !forcetoggle;
-            ListOfPendelums[i].GetComponent<Pendelum>().SetNeuralNetwork(NeuralMatingPool[Random.Range(0, NeuralMatingPool.Count)].Controller, Startingforce); //Add random controller from mating pool
+            if(NumberOfNewPendelums > i)
+            {
+                ListOfPendelums[i].gameObject.GetComponent<Pendelum>().SetNeuralNetwork(new NeuronalNetwork(3, 1, NumberofnueronsFirst, NumberofneuronsSecond, NumberofneuronsThird), Random.Range(-2, 2));
+            }
+            else
+            {
+                ListOfPendelums[i].GetComponent<Pendelum>().SetNeuralNetwork(NeuralMatingPool[Random.Range(0, NeuralMatingPool.Count)].Controller, Random.Range(-1, 1)); //Add random controller from mating pool
+            }
         }
         NeuralMatingPool.Clear(); //Kill the last generation of pendelums
         ListOfNeuralNetworks.Clear(); //Clear the old list of networks
@@ -601,7 +608,7 @@ public class GameMaster : MonoBehaviour {
         {
             for (int i = 0; i < NumberOfPendelums; i++)
             {
-                ListOfPendelums[i].gameObject.GetComponent<Pendelum>().SetNeuralNetwork(new NeuronalNetwork(3,1,5,10,10),0f);
+                ListOfPendelums[i].gameObject.GetComponent<Pendelum>().SetNeuralNetwork(new NeuronalNetwork(3,1, NumberofnueronsFirst, NumberofneuronsSecond, NumberofneuronsThird),0f);
             }
         }
         AvarageFitnessValues.Clear();
@@ -615,11 +622,48 @@ public class GameMaster : MonoBehaviour {
         NumberofPendelumsSliderText.text = "Number of Pendelums" + NumberOfPendelums;
     }
 
+    public void NumberOfNewPendelumsPerGeneration()
+    {
+        NumberOfNewPendelums = (int)NumberOfNewPendelumsSlider.value;
+        NUmberOfNewPendelumsText.text = "Number of new pendelums: " + NumberOfNewPendelums;
+    }
+
+    public void SetNeuralNetworkLayers()
+    {
+        NumberofnueronsFirst = System.Convert.ToInt32(FirstLayer.text);
+        NumberofneuronsSecond = System.Convert.ToInt32(SecondLayer.text);
+        NumberofneuronsThird = System.Convert.ToInt32(ThirdLayer.text);
+        //print(NumberofnueronsFirst);
+        //print(NumberofneuronsSecond);
+        //print(NumberofneuronsThird);
+    }
+
     public void MinusNumberOfActivePendelums()
     {
         NumberOfPendelumsActive = NumberOfPendelumsActive - 1;
         //print(NumberOfPendelumsActive);
     }
 
+    public void KillAllPendelums()
+    {
+        //Kill all pendelums
+        for (int i = 0; i < NumberOfPendelums; i++)
+        {
+            //print(ListOfPendelums[i].GetComponent<Pendelum>().Fitness);
+            GameObject thing = ListOfPendelums[i];
+            Destroy(thing); //Destroy the pendelums at the end.  
+        }
+        ListOfPendelums.Clear();
+        MatingPool.Clear();
+        NeuralMatingPool.Clear();
+        BestPendelums.Clear();
+        ListOfNeuralNetworks.Clear();
+        IsPendelumsCreated = false;
+        IsSimulationRunning = false;
+        RunNextGeneration = false;
+        UseParents = true;
+        AvarageFitnessGraph.GetComponent<Graph>().ResetValues();
+    }
 
 }
+
